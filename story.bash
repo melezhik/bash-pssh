@@ -1,6 +1,6 @@
 debug=$(config debug)
 
-[[ $debug ]]; set -x
+[[ $debug ]] && set -x
 
 hosts=$(config hosts)
 commands=$(config commands)
