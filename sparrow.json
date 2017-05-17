@@ -1,6 +1,6 @@
 {
   "name" : "bash-pssh",
-  "version" : "0.1.0",
+  "version" : "0.2.0",
   "description" : "parallel ssh on bash",
   "category" : "utilities",
   "url" : "https://github.com/Spigell/bash-pssh"

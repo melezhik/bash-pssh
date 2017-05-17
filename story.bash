@@ -6,6 +6,7 @@ hosts=$(config hosts)
 commands=$(config commands)
 user=$(config user)
 hosts_file=$(config hosts_list)
+hosts_exclude=$(config exclude)
 full_error_output=$(config output_error)
 full_output=$(config output)
 ssh_quiet=$(config quiet)
@@ -28,9 +29,13 @@ for host in $hosts; do
   fi
 done
 
-  hosts_list=`echo $hosts_list | sed 's/[[:space:]]/\n/g' | sort -u`
-
 fi
+
+hosts_list=`echo $hosts_list | sed 's/[[:space:]]/\n/g' | sort -u`
+
+for host_exclude in $hosts_exclude; do
+  hosts_list=`echo $hosts_list | sed "s/"$host_exclude"//g"`
+done
 
 pids=()
 rm -f /tmp/.bash-pssh.$$.*

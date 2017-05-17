@@ -44,7 +44,11 @@ list of hosts.
 
 ## hosts_list
 
-list of your hosts. Has more priority than command line parameter.
+list of your hosts in file. Has more priority than command line parameter.
+
+## exclude
+
+exclude one or more hosts.
 
 ## user
 
