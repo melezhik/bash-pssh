@@ -4,9 +4,15 @@ debug=$(config debug)
 
 hosts=$(config hosts)
 commands=$(config commands)
-hosts_storage=$(config hosts_storage) 
 user=$(config user)
 hosts_file=$(config hosts_list)
+full_error_output=$(config output_error)
+full_output=$(config output)
+ssh_quiet=$(config quiet)
+
+[[ -z $user ]] && user=$USER
+
+[[ $ssh_quiet == true ]] && ssh_quiet_option=" -q"
 
 if [[ -n $hosts_file ]]; then
   hosts_list=`cat $hosts_file`
@@ -28,8 +34,9 @@ fi
 
 pids=()
 rm -f /tmp/.bash-pssh.$$.*
+log_postfix=$(date +%s)
 for host in $hosts_list ; do
-  ssh -q -o UserKnownHostsFile=/dev/null -o PasswordAuthentication=no -o StrictHostKeyChecking=no -o ConnectTimeout=10 -t $host "{ $commands ; } " 2>/tmp/.bash-pssh.$$.$host.error >/tmp/.bash-pssh.$$.$host &
+  ssh $ssh_quiet_option -o UserKnownHostsFile=/dev/null -o PasswordAuthentication=no -o StrictHostKeyChecking=no -o ConnectTimeout=10 -t $user@$host "{ $commands ; } " 2>/tmp/.bash-pssh.$$.$host.error >/tmp/.bash-pssh.$$.$host &
   pids[${#pids[*]}]=$!
 	{
 		while [[ -e /proc/$$ ]] ; do sleep 1s; done;
@@ -45,10 +52,10 @@ for host in $hosts_list ; do
 	wait ${pids[$i]}
 
 	[[ -f /tmp/.bash-pssh.$$.$host ]] &&
-	cat /tmp/.bash-pssh.$$.$host | sed "s/^/$host:\t/"
+	cat /tmp/.bash-pssh.$$.$host | sed "s/^/$host:\t/" | tee -a $full_output.$log_postfix
 	
 	[[ -f /tmp/.bash-pssh.$$.$host.error ]] &&
-	cat /tmp/.bash-pssh.$$.$host.error | sed "s/^/E:$host:\t/" >&2 
+	cat /tmp/.bash-pssh.$$.$host.error | sed "s/^/E:$host:\t/" >&2 | tee -a $full_error_output.$log_postfix
 	
 	
 	i=$(( $i + 1 ))
