@@ -13,7 +13,7 @@ For searching by mask using /etc/hosts
 # USAGE
 ## Manually
     
-    $ sparrow plg run bash-pssh --param commands=uname  --param hosts="'194.87.235.183 193.124.178.59 my-*-host'"
+    $ sparrow plg run bash-pssh --param commands=uname  --param hosts='194.87.235.183 193.124.178.59 my-*-host'
     
     193.124.178.59:	Linux
     194.87.235.183:	Linux
